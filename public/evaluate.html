@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Evaluation · U-tron</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/pages.css">
+  <script type="module" src="/js/evaluate.js"></script>
+</head>
+<body>
+  <header class="topbar eval-topbar">
+    <a class="btn btn-ghost btn-icon" id="exit" href="/courses.html" aria-label="Save and exit">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </a>
+    <p class="eval-course"><span class="mono" id="course-code"></span><span id="course-title"></span></p>
+    <div class="topbar-end">
+      <!-- role="status": screen readers announce "Saved" when it appears -->
+      <span class="save-status" id="save-status" role="status"></span>
+    </div>
+  </header>
+
+  <div class="progress" id="progress" role="progressbar" aria-label="Evaluation progress"
+       aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+
+  <main class="eval-main">
+    <div class="eval-column">
+      <!-- evaluate.js draws each screen (question, review, done) in here. -->
+      <div class="stage" id="stage">
+        <span class="skeleton skeleton-counter"></span>
+        <span class="skeleton skeleton-prompt"></span>
+        <span class="skeleton skeleton-prompt skeleton-short"></span>
+      </div>
+
+      <div class="note note-danger save-error" id="save-error" role="alert" hidden>
+        <span>Couldn't save — check your connection.</span>
+        <button class="btn btn-ghost btn-small" id="retry-save" type="button">Retry</button>
+      </div>
+
+      <!-- Back / Next stay in place while the question above them changes. -->
+      <div class="nav-row" id="nav" hidden>
+        <button class="btn btn-ghost" id="back" type="button">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          Back
+        </button>
+        <div class="nav-next">
+          <span class="kbd" id="next-hint" aria-hidden="true">Enter</span>
+          <button class="btn btn-primary" id="next" type="button">Next</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Announces "Question 4 of 10" to screen readers as the screen changes. -->
+  <p class="visually-hidden" id="live" aria-live="polite"></p>
+
+  <footer class="footer">U-tron is a student project. Not affiliated with any institution.</footer>
+</body>
+</html>

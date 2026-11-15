@@ -259,3 +259,358 @@ a.course-row:focus-visible {
     grid-area: main;
   }
 }
+
+/* --- Evaluation --- */
+
+/* No border here: the progress track right below acts as the line. */
+.eval-topbar {
+  gap: var(--s2);
+  padding-left: var(--s3);
+  border-bottom: 0;
+}
+
+.eval-course {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.eval-course .mono {
+  margin-right: var(--s3);
+  color: var(--ink);
+}
+
+.save-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+  opacity: 0;
+  transition: opacity var(--base) var(--ease);
+}
+
+.save-status.is-visible {
+  opacity: 1;
+}
+
+.save-status .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.eval-main {
+  display: flex;
+  justify-content: center;
+  padding: clamp(40px, 9vh, 96px) var(--s5) var(--s8);
+}
+
+.eval-column {
+  width: 100%;
+  max-width: 640px;
+}
+
+/* Screen changes: the old screen fades out moving up, the new one fades
+   in from below. Going back flips the direction by flipping --shift. */
+.stage {
+  --shift: 12px;
+}
+
+.stage[data-direction="back"] {
+  --shift: -12px;
+}
+
+.stage.is-leaving {
+  animation: stage-leave 150ms var(--ease) forwards;
+}
+
+.stage.is-entering {
+  animation: stage-enter var(--base) var(--ease);
+}
+
+@keyframes stage-leave {
+  to {
+    opacity: 0;
+    transform: translateY(calc(var(--shift) * -1));
+  }
+}
+
+@keyframes stage-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--shift));
+  }
+}
+
+/* No sliding for people who asked for reduced motion; the fade is instant. */
+@media (prefers-reduced-motion: reduce) {
+  .stage {
+    --shift: 0px;
+  }
+}
+
+.counter {
+  margin-bottom: var(--s4);
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+}
+
+legend {
+  display: block;
+  width: 100%;
+}
+
+.question-prompt {
+  max-width: 24ch;
+  font-size: var(--text-2xl);
+  font-weight: 550;
+  letter-spacing: -0.03em;
+}
+
+.question-help {
+  margin-top: var(--s4);
+  color: var(--ink-2);
+}
+
+.scale,
+.choices,
+.textarea {
+  margin-top: var(--s6);
+}
+
+.char-count {
+  margin-top: var(--s2);
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+  text-align: right;
+}
+
+.tip {
+  margin-top: var(--s5);
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+.save-error {
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--s5);
+}
+
+.save-error .btn {
+  color: inherit;
+}
+
+.nav-row {
+  display: flex;
+  align-items: center;
+  margin-top: var(--s7);
+}
+
+.nav-next {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  margin-left: auto;
+}
+
+.nav-next .btn {
+  min-width: 96px;
+}
+
+/* Programmatic focus on a heading helps screen readers find the new
+   screen; it should not draw a ring around the heading. */
+h1[tabindex="-1"]:focus {
+  outline: none;
+}
+
+.skeleton-counter {
+  width: 64px;
+  margin-bottom: var(--s5);
+}
+
+.skeleton-prompt {
+  width: 80%;
+  height: 36px;
+  margin-bottom: var(--s3);
+}
+
+.skeleton-short {
+  width: 50%;
+}
+
+/* Review */
+
+.review-title,
+.message-title {
+  font-size: var(--text-xl);
+}
+
+.review-list {
+  margin-top: var(--s5);
+}
+
+.review-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s4);
+  padding: var(--s4) var(--s3) var(--s4) var(--s5);
+}
+
+.review-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.review-question {
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+
+.review-answer {
+  margin-top: var(--s1);
+  font-weight: 500;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.review-answer.is-empty {
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+.stage > .note {
+  margin-top: var(--s5);
+}
+
+.review-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  margin-top: var(--s5);
+}
+
+.review-actions .btn-ghost {
+  margin-left: calc(var(--s4) * -1);
+}
+
+.confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.confirm .btn-ghost {
+  margin-left: 0;
+}
+
+/* Done */
+
+.done-check {
+  width: 56px;
+  height: 56px;
+  fill: none;
+  stroke: var(--ok);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The stroke "draws in": a dash as long as the whole path starts fully
+   offset (invisible) and slides to offset 0 (fully visible). */
+.done-check circle {
+  stroke-dasharray: 164;
+  stroke-dashoffset: 164;
+  animation: draw 500ms var(--ease) 150ms forwards;
+}
+
+.done-check path {
+  stroke-dasharray: 36;
+  stroke-dashoffset: 36;
+  animation: draw 350ms var(--ease) 450ms forwards;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.done-title {
+  margin-top: var(--s5);
+  font-size: var(--text-2xl);
+  letter-spacing: -0.03em;
+}
+
+.done-text,
+.message-text {
+  max-width: 46ch;
+  margin-top: var(--s3);
+  color: var(--ink-2);
+}
+
+.done-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  margin-top: var(--s6);
+}
+
+.message-text + .btn {
+  margin-top: var(--s6);
+}
+
+/* Keyboard hints make no sense on a touch screen. */
+@media (hover: none) {
+  .tip,
+  .nav-next .kbd,
+  .choices .kbd {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .eval-main {
+    /* Bottom padding leaves room for the fixed Back / Next bar. */
+    padding: var(--s6) var(--s4) 120px;
+  }
+
+  .question-prompt {
+    font-size: var(--text-xl);
+    letter-spacing: -0.02em;
+  }
+
+  .scale .option-face {
+    height: 64px;
+  }
+
+  /* Back / Next stay within thumb reach at the bottom of the screen. */
+  .nav-row {
+    position: fixed;
+    inset: auto 0 0 0;
+    margin: 0;
+    padding: var(--s3) var(--s4) calc(var(--s3) + env(safe-area-inset-bottom));
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+  }
+
+  .review-row {
+    padding-left: var(--s4);
+  }
+
+  .done-actions .btn {
+    width: 100%;
+    white-space: normal;
+    height: auto;
+    min-height: 44px;
+    padding-block: var(--s3);
+    line-height: 1.3;
+  }
+}
