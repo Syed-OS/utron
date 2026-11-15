@@ -98,9 +98,6 @@ Every screen, on desktop and phone, is in [`docs/screenshots/`](docs/screenshots
      node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
      ```
 
-   - `DEMO_PASSWORD` — the password for the demo account. Choose it here; it
-     is never stored in the code.
-
    On Atlas, make sure your IP address is allowed under *Network Access*.
 
 3. Create the demo courses and the demo account:
@@ -123,12 +120,12 @@ There is exactly one account, and it is the only way in:
 
 | | |
 |---|---|
-| Email | `johndoe@onion.edu` (the `DEMO_EMAIL` setting) |
-| Password | whatever you set as `DEMO_PASSWORD` in `.env` |
+| Email | `johndoe@onion.edu` |
+| Password | `be77erth@nsc@ntr0n` |
 
-The password lives only in `.env`, which git ignores. The seed stores a bcrypt
-hash of it in the database and removes any other account. To change the
-password, edit `.env` and run `npm run seed` again.
+These are demo credentials for made-up data, published here so anyone who
+clones the project can sign in. They are set in `scripts/seed.js`; the
+database stores only a bcrypt hash of the password.
 
 The account is enrolled in four courses and starts with one evaluation
 submitted and one in progress, so the dashboard shows all three states.
@@ -231,8 +228,10 @@ response and asserts it holds nothing that identifies the student.
 
 ## Security and anonymity
 
-- **Passwords** are hashed with bcrypt (cost 12). The plaintext is never
-  stored in the database or in the repository.
+- **Passwords** are hashed with bcrypt (cost 12). The database never holds
+  the plaintext. (The one demo password is published in this README on
+  purpose; real secrets — the connection string and session secret — stay in
+  `.env`.)
 - **Sessions** use an httpOnly, `SameSite=Strict` cookie holding a random id.
   The id is regenerated at sign-in and destroyed at sign-out.
 - **Sign-in** returns the same error for a wrong password and an unknown

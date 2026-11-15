@@ -3,9 +3,10 @@
 //   npm run seed              create or update the courses and the account
 //   npm run seed -- --reset   wipe everything first, then recreate
 //
-// The account's email and password come from .env (DEMO_EMAIL and
-// DEMO_PASSWORD), so the password is never written in the code or
-// committed to the repository. Only its bcrypt hash goes into the database.
+// There is one demo account. Its email and password are written below (and
+// in the README) on purpose, so anyone who clones the project can sign in.
+// That is fine for demo data; a real deployment would never do this. Even
+// here, the database only ever holds a bcrypt hash of the password.
 
 import "dotenv/config";
 import crypto from "node:crypto";
@@ -29,16 +30,16 @@ const courses = [
     professor: "Prof. Priya Raman", schedule: "Mon/Wed/Fri 11:45–12:50" },
 ];
 
-// Stop early, with instructions, if a setting is missing.
-const missing = ["MONGODB_URI", "DEMO_EMAIL", "DEMO_PASSWORD"].filter((name) => !process.env[name]);
-if (missing.length > 0) {
-  console.error(`The seed needs ${missing.join(", ")} in .env. See ".env.example" for what each one is.`);
+// The demo account. Stored the same way the login route looks it up:
+// lowercase, no spaces around it.
+const email = "johndoe@onion.edu";
+const name = "John Doe";
+const password = "be77erth@nsc@ntr0n";
+
+if (!process.env.MONGODB_URI) {
+  console.error('The seed needs MONGODB_URI. Copy ".env.example" to ".env" and fill it in.');
   process.exit(1);
 }
-
-// Stored the same way the login route looks it up: trimmed and lowercase.
-const email = process.env.DEMO_EMAIL.trim().toLowerCase();
-const name = process.env.DEMO_NAME || "John Doe";
 
 try {
   await connectToDatabase(process.env.MONGODB_URI, dbName);
@@ -68,12 +69,12 @@ const existing = await db.students.findOne({ email });
 const account = {
   email,
   name,
-  passwordHash: await hashPassword(process.env.DEMO_PASSWORD),
+  passwordHash: await hashPassword(password),
   courseIds: courses.map((course) => course._id),
 };
 
 if (existing) {
-  // Already there: bring it in line with .env (for example a new password).
+  // Already there: bring it in line with the values above.
   await db.students.updateOne({ _id: existing._id }, { $set: account });
 } else {
   const { insertedId } = await db.students.insertOne(account);
@@ -87,7 +88,7 @@ Seeded ${courses.length} courses and 1 account for ${term}.
 
   Sign in at  http://localhost:${process.env.PORT || 3000}
   Email       ${email}
-  Password    the DEMO_PASSWORD value in your .env file
+  Password    ${password}
 `);
 
 await closeDatabase();

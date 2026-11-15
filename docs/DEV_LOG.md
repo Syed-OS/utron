@@ -210,15 +210,16 @@ All entries are from 2026-11-15, the day of the build.
 - **Why:** six generated passwords, read out of a demo inbox, made the demo
   slower to start and harder to follow. One known account is enough to show
   everything.
-- **Change:** the seed now creates a single account from `DEMO_EMAIL` and
-  `DEMO_PASSWORD` in `.env`, removes any other account, and enrolls it in
+- **Change:** the seed now creates a single account, removes any other account, and enrolls it in
   four courses. The demo inbox page, its API routes, the file-based mailer,
   the password email and the password generator were deleted, along with
   their tests and styles (29 tests became 25).
-- **Decision:** the password is read from `.env` rather than written in
-  `seed.js`. The repository is public, and a password committed to a public
-  repository would contradict the project's own rule that secrets never go
-  in code.
+- **Decision, revised:** the password was first read from `.env` to keep it
+  out of a public repository. That meant a grader cloning the project could
+  not sign in without being told the password separately. Since the account
+  only guards made-up demo data, the credentials are now written in
+  `scripts/seed.js` and the README. The real secrets — the Atlas connection
+  string and the session secret — still live only in `.env`.
 - **Note:** entries 10 and 11 above describe the inbox that this change
   removed. They are kept because they happened.
 

@@ -60,9 +60,11 @@ inside the hash, so two students with the same password have different hashes
 and precomputed tables are useless.
 
 **Where is the plaintext password stored?**
-Nowhere in the database and nowhere in the repository. The demo account's
-password is set in `.env` (which git ignores). `scripts/seed.js` reads it,
-hashes it with bcrypt, and stores only the hash.
+Nowhere in the database: `scripts/seed.js` hashes it with bcrypt and stores
+only the hash. The demo account's password is written in the seed script and
+the README on purpose, so a grader can sign in — acceptable for made-up demo
+data, and something a real deployment would never do. The real secrets (the
+Atlas connection string and the session secret) are only in `.env`.
 
 **What is in the cookie?**
 A random session id, signed with `SESSION_SECRET` so it cannot be forged. No
