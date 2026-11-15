@@ -1,0 +1,81 @@
+/* Design tokens: every color, size and timing used anywhere on the site.
+   Nothing else in the CSS hard-codes a color, so the dark theme below only
+   has to swap these values and every page follows. */
+
+:root {
+  color-scheme: light dark;
+
+  /* Color — warm neutrals and one signal accent, used sparingly */
+  --bg:          #F7F6F3;  /* warm paper */
+  --surface:     #FFFFFF;
+  --surface-2:   #F1EFEA;  /* hover and subtle fills */
+  --ink:         #16150F;  /* primary text, primary buttons */
+  --ink-2:       #56534A;  /* secondary text */
+  --ink-3:       #6E6A60;  /* tertiary text, placeholders */
+  --line:        #E5E2DA;  /* hairline borders */
+  --line-2:      #D6D2C8;  /* stronger borders, input borders */
+  --accent:      #F2541B;  /* progress fill, selected state, focus ring */
+  --accent-ink:  #B83A0C;  /* the accent when it is used as text */
+  --accent-wash: #FDEDE5;  /* selected option background */
+  --ok:          #1F7A4D;
+  --ok-wash:     #E6F3EC;
+  --warn:        #8A5A00;
+  --warn-wash:   #FBF1DC;
+  --danger:      #B4261A;
+  --danger-wash: #FBE9E7;
+
+  /* Type */
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
+  --text-xs:  0.8125rem;
+  --text-sm:  0.9375rem;
+  --text-md:  1.0625rem;
+  --text-lg:  1.25rem;
+  --text-xl:  1.75rem;
+  --text-2xl: 2.5rem;
+  --text-3xl: 3.25rem;
+
+  /* Space (4px grid) */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;
+
+  /* Shape and motion */
+  --radius-sm: 8px;
+  --radius:    12px;
+  --radius-lg: 16px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --fast: 140ms;
+  --base: 220ms;
+}
+
+/* Dark theme: follows the operating system setting. Primary buttons use
+   --ink as their background, so they invert on their own (light button,
+   dark text). */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:          #0E0E0C;
+    --surface:     #161613;
+    --surface-2:   #1F1E1A;
+    --ink:         #F2F0EA;
+    --ink-2:       #ABA79C;
+    --ink-3:       #8A867C;
+    --line:        #2A2924;
+    --line-2:      #3A3832;
+    --accent:      #F2541B;
+    --accent-ink:  #FF8A5C;
+    --accent-wash: #2A1A12;
+    --ok:          #5CC08B;
+    --ok-wash:     #12261B;
+    --warn:        #E0A93B;
+    --warn-wash:   #2A2110;
+    --danger:      #FF8577;
+    --danger-wash: #2E1614;
+  }
+}
