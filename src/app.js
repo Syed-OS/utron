@@ -10,6 +10,7 @@ import MongoStore from "connect-mongo";
 import { getClient } from "./db.js";
 import { authRouter } from "./routes/auth.js";
 import { coursesRouter } from "./routes/courses.js";
+import { demoInboxRouter } from "./routes/demoInbox.js";
 import { apiNotFound, pageNotFound, errorHandler } from "./middleware/errorHandler.js";
 
 const TWO_HOURS = 2 * 60 * 60 * 1000;
@@ -18,6 +19,7 @@ export function createApp() {
   const app = express();
   const isProduction = process.env.NODE_ENV === "production";
   const dbName = process.env.DB_NAME || "utron";
+  const demoInbox = process.env.DEMO_INBOX === "true";
 
   // Do not advertise which framework runs the site.
   app.disable("x-powered-by");
@@ -49,6 +51,11 @@ export function createApp() {
   // Parse JSON bodies. Evaluations are small, so anything over 20kb is
   // rejected before it is even read into memory.
   app.use(express.json({ limit: "20kb" }));
+
+  // Outside demo mode the inbox page does not exist.
+  if (!demoInbox) {
+    app.get("/inbox.html", pageNotFound);
+  }
 
   // The frontend: plain files from /public. Served before the session
   // middleware so a request for a stylesheet never touches the database.
@@ -82,13 +89,16 @@ export function createApp() {
   app.get("/api/config", (req, res) => {
     res.json({
       term: process.env.TERM_NAME || "Fall 2026",
-      demoInbox: process.env.DEMO_INBOX === "true",
+      demoInbox,
       signedIn: Boolean(req.session.studentId),
     });
   });
 
   app.use("/api", authRouter);
   app.use("/api", coursesRouter);
+  if (demoInbox) {
+    app.use("/api", demoInboxRouter);
+  }
 
   app.use("/api", apiNotFound);
   app.use(pageNotFound);
