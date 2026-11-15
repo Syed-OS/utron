@@ -27,7 +27,9 @@ export function errorHandler(err, req, res, next) {
   }
 
   // Log the detail for us, on the server only.
-  console.error(`[error] ${req.method} ${req.path}:`, err);
+  // Only the stack is logged, never the request body, so answers cannot
+  // leak into a log file.
+  console.error(`[error] ${req.method} ${req.path}:`, err.stack || err);
 
   // The client gets a generic message: a stack trace would tell an
   // attacker about file paths, libraries and queries.
