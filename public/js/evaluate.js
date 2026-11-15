@@ -513,6 +513,7 @@ async function saveDraft() {
     }
     // Nothing is lost: the answers are still in state.answers, and the
     // next move (or Retry) sends them all again.
+    saveStatus.classList.remove("is-visible");
     saveError.hidden = false;
     return false;
   }
