@@ -60,9 +60,9 @@ inside the hash, so two students with the same password have different hashes
 and precomputed tables are useless.
 
 **Where is the plaintext password stored?**
-Nowhere in the database. `scripts/seed.js` generates it, hashes it, stores the
-hash, and puts the plaintext only into the email. In this demo the "email" is
-a file in `outbox/`, standing in for the student's real inbox.
+Nowhere in the database and nowhere in the repository. The demo account's
+password is set in `.env` (which git ignores). `scripts/seed.js` reads it,
+hashes it with bcrypt, and stores only the hash.
 
 **What is in the cookie?**
 A random session id, signed with `SESSION_SECRET` so it cannot be forged. No
@@ -76,7 +76,7 @@ automatically. The one callback-style call, `regenerate`, passes its error
 along with `next(err)`.
 
 **Why can't students change their password?**
-A deliberate scope decision: passwords are issued once per term, like a
+A deliberate scope decision: a password is issued for the term, like a
 ballot. Leaving out a reset flow also leaves out its attack surface.
 
 ---

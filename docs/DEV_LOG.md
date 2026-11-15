@@ -193,6 +193,35 @@ All entries are from 2026-11-15, the day of the build.
   passes with the keyboard alone, with zero console errors.
 - **Commit:** `488249b`
 
+### 16. The seed crashed with a stack trace on a bad connection string
+
+- **Noticed:** on the first run on the presenter's Mac, `.env` still held the
+  placeholder connection string. `npm start` answered with its friendly
+  "can't reach MongoDB" message, but `npm run seed` printed a raw
+  `querySrv ENOTFOUND` stack trace.
+- **Cause:** `server.js` wrapped the database connection in try/catch; the
+  seed script did not.
+- **Fix:** the seed catches the connection error and prints the same kind of
+  short message.
+- **Commit:** `842efeb`
+
+### 17. Simplified to one account; demo inbox removed
+
+- **Why:** six generated passwords, read out of a demo inbox, made the demo
+  slower to start and harder to follow. One known account is enough to show
+  everything.
+- **Change:** the seed now creates a single account from `DEMO_EMAIL` and
+  `DEMO_PASSWORD` in `.env`, removes any other account, and enrolls it in
+  four courses. The demo inbox page, its API routes, the file-based mailer,
+  the password email and the password generator were deleted, along with
+  their tests and styles (29 tests became 25).
+- **Decision:** the password is read from `.env` rather than written in
+  `seed.js`. The repository is public, and a password committed to a public
+  repository would contradict the project's own rule that secrets never go
+  in code.
+- **Note:** entries 10 and 11 above describe the inbox that this change
+  removed. They are kept because they happened.
+
 ---
 
 ## Decisions worth remembering
@@ -208,10 +237,9 @@ Not bugs, but choices that someone might ask about.
 - **`npm test` is just `node --test`.** No `NODE_ENV=test` prefix in the
   script, because that syntax does not work in the Windows command prompt.
   The test file sets the variable itself.
-- **Three small files beyond the original plan.** `public/js/ui.js` (HTML
-  escaping and icons shared by three pages), `src/services/passwordEmail.js`
-  (keeps the email's HTML out of the seed script), and `scripts/local-db.js`
-  (see entry 2).
+- **Two small files beyond the original plan.** `public/js/ui.js` (HTML
+  escaping and icons shared by the pages) and `scripts/local-db.js` (see
+  entry 2).
 - **One extra route, `GET /api/config`.** See entry 5.
 - **Not reachable during the build: MongoDB Atlas.** Everything was verified
   against a local replica set of the same MongoDB server. The first run

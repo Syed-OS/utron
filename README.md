@@ -22,9 +22,9 @@ Built for CSC 240 (Web Programming), Track 2: Backend & Database
 |---|---|
 | ![Question](docs/screenshots/04-question-choice-desktop.png) | ![Review](docs/screenshots/06-review-desktop.png) |
 
-| Dark theme | Demo inbox |
+| Dark theme | Submitted |
 |---|---|
-| ![Dark theme](docs/screenshots/10-dashboard-dark-desktop.png) | ![Demo inbox](docs/screenshots/09-demo-inbox-desktop.png) |
+| ![Dark theme](docs/screenshots/10-dashboard-dark-desktop.png) | ![Submitted](docs/screenshots/07-done-desktop.png) |
 
 <p>
   <img src="docs/screenshots/02-dashboard-mobile.png" width="24%" alt="Dashboard on a phone">
@@ -37,8 +37,8 @@ Every screen, on desktop and phone, is in [`docs/screenshots/`](docs/screenshots
 
 ## Features
 
-- **Real sign-in.** Each student gets a generated password by email. Only its
-  bcrypt hash is stored. Failed sign-ins are rate-limited and never reveal
+- **Real sign-in.** An email address alone is not enough: every account has a
+  password, and only its bcrypt hash is stored. Failed sign-ins are rate-limited and never reveal
   whether an email has an account.
 - **Anonymous answers.** A submission writes two unrelated documents: a receipt
   (*who* submitted) and a response (*what* was said). Nothing connects them.
@@ -51,7 +51,6 @@ Every screen, on desktop and phone, is in [`docs/screenshots/`](docs/screenshots
 - **Autosave and resume.** Answers are saved as you go; closing the tab,
   refreshing, or an expired session never loses them.
 - **Light and dark themes**, keyboard accessible, and laid out for phones.
-- **Demo inbox** that shows the password emails without sending real email.
 
 ## Tech stack
 
@@ -99,9 +98,12 @@ Every screen, on desktop and phone, is in [`docs/screenshots/`](docs/screenshots
      node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
      ```
 
+   - `DEMO_PASSWORD` — the password for the demo account. Choose it here; it
+     is never stored in the code.
+
    On Atlas, make sure your IP address is allowed under *Network Access*.
 
-3. Create the demo courses and students:
+3. Create the demo courses and the demo account:
 
    ```bash
    npm run seed
@@ -113,20 +115,25 @@ Every screen, on desktop and phone, is in [`docs/screenshots/`](docs/screenshots
    npm start
    ```
 
-5. Open <http://localhost:3000>. To get a password, open the demo inbox at
-   <http://localhost:3000/inbox.html>, pick a student, and press
-   **Copy password**.
+5. Open <http://localhost:3000> and sign in with the demo account.
 
-### Demo accounts
+### The demo account
 
-`npm run seed` prints a table of every student's email and password, and puts
-the same passwords in the demo inbox. Passwords are generated fresh each time
-the database is seeded, so they are not listed here.
+There is exactly one account, and it is the only way in:
 
-Sign in as **Alex Rivera** to see all three course states at once: one
-evaluation submitted, one in progress, and two not started.
+| | |
+|---|---|
+| Email | `johndoe@onion.edu` (the `DEMO_EMAIL` setting) |
+| Password | whatever you set as `DEMO_PASSWORD` in `.env` |
 
-To wipe everything and start over (new passwords, clean data):
+The password lives only in `.env`, which git ignores. The seed stores a bcrypt
+hash of it in the database and removes any other account. To change the
+password, edit `.env` and run `npm run seed` again.
+
+The account is enrolled in four courses and starts with one evaluation
+submitted and one in progress, so the dashboard shows all three states.
+
+To wipe everything and start from that clean state again:
 
 ```bash
 npm run seed -- --reset
@@ -168,24 +175,20 @@ utron/
 │   │   └── errorHandler.js    404s and the final error handler
 │   ├── routes/
 │   │   ├── auth.js            login, logout, me
-│   │   ├── courses.js         course list, evaluation, drafts, submit
-│   │   └── demoInbox.js       demo-only inbox API
+│   │   └── courses.js         course list, evaluation, drafts, submit
 │   └── services/
-│       ├── passwords.js       generate, hash, verify
-│       ├── mailer.js          writes "emails" to outbox/
-│       ├── passwordEmail.js   the password email's text and HTML
+│       ├── passwords.js       hash and verify
 │       └── validateAnswers.js checks answers against the questionnaire
 ├── scripts/
-│   ├── seed.js                demo courses and students
+│   ├── seed.js                demo courses and the demo account
 │   └── local-db.js            optional local database
 ├── public/                    the frontend, served as static files
 │   ├── index.html             sign in
 │   ├── courses.html           dashboard
 │   ├── evaluate.html          questions, review, done
-│   ├── inbox.html             demo inbox
 │   ├── 404.html
 │   ├── css/                   tokens, base, components, pages
-│   ├── js/                    api, ui, login, courses, evaluate, inbox
+│   ├── js/                    api, ui, login, courses, evaluate
 │   └── fonts/
 ├── tests/                     unit tests and API tests
 └── docs/                      architecture, code tour, dev log, screenshots
@@ -193,8 +196,8 @@ utron/
 
 ## API
 
-All routes send and receive JSON. Everything except sign-in, `config`,
-`health` and the demo inbox requires a session.
+All routes send and receive JSON. Everything except sign-in, `config` and
+`health` requires a session.
 
 | Method | Path | What it does |
 |---|---|---|
@@ -208,8 +211,6 @@ All routes send and receive JSON. Everything except sign-in, `config`,
 | POST | `/api/courses/:courseId/submit` | Submit anonymously. `409` if already submitted. |
 | GET | `/api/config` | Public settings for the sign-in page. |
 | GET | `/api/health` | `{ ok: true }` when the server is up. |
-| GET | `/api/demo/inbox` | List demo emails. Only exists when `DEMO_INBOX=true`. |
-| GET | `/api/demo/inbox/:id/html` | One email's HTML, for the sandboxed preview. |
 
 ## Tests
 
@@ -217,12 +218,12 @@ All routes send and receive JSON. Everything except sign-in, `config`,
 npm test
 ```
 
-29 tests using Node's built-in test runner. The API tests make real HTTP
+25 tests using Node's built-in test runner. The API tests make real HTTP
 requests against the app with an in-memory MongoDB, so they need no Atlas
 connection. The first run downloads that database once (about a minute);
 later runs take a few seconds.
 
-They cover answer validation, password generation and hashing, sign-in
+They cover answer validation, password hashing, sign-in
 (including the identical response for a wrong password and an unknown email),
 the session guard, enrollment checks, drafts, submitting, double submission,
 two submits racing each other, and an **anonymity test** that inspects a stored
@@ -230,8 +231,8 @@ response and asserts it holds nothing that identifies the student.
 
 ## Security and anonymity
 
-- **Passwords** are hashed with bcrypt (cost 12). The plaintext exists only in
-  the email sent to the student.
+- **Passwords** are hashed with bcrypt (cost 12). The plaintext is never
+  stored in the database or in the repository.
 - **Sessions** use an httpOnly, `SameSite=Strict` cookie holding a random id.
   The id is regenerated at sign-in and destroyed at sign-out.
 - **Sign-in** returns the same error for a wrong password and an unknown

@@ -12,16 +12,16 @@ database.
 ```mermaid
 flowchart LR
     subgraph Browser
-        pages["HTML pages<br/>index · courses · evaluate · inbox"]
+        pages["HTML pages<br/>index · courses · evaluate"]
         js["JavaScript modules<br/>api.js + one file per page"]
         pages --> js
     end
 
     subgraph Server["Express server (Node.js)"]
         mw["Middleware<br/>helmet (CSP) · JSON parser · sessions"]
-        routes["Routes<br/>auth.js · courses.js · demoInbox.js"]
+        routes["Routes<br/>auth.js · courses.js"]
         guard["requireAuth"]
-        services["Services<br/>passwords · validateAnswers · mailer"]
+        services["Services<br/>passwords · validateAnswers"]
         mw --> routes
         routes --> guard
         routes --> services
@@ -36,12 +36,9 @@ flowchart LR
         sessions[(sessions)]
     end
 
-    outbox[["outbox/ folder<br/>(demo emails)"]]
-
     js -- "fetch /api/…<br/>JSON + session cookie" --> mw
     routes --> students & courses & drafts & submissions & responses
     mw -- "connect-mongo" --> sessions
-    services --> outbox
 ```
 
 A request to a protected route passes through, in order:
