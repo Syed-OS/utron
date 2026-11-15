@@ -36,13 +36,13 @@ export function buildPasswordEmail({ name, password, term, signInUrl }) {
       Course evaluations for ${term} are open. Sign in with this email address and the password below.
     </p>
 
-    <div style="margin:24px 0 0; font-size:12px; letter-spacing:0.04em; color:#8C887D; font-family:${mono};">YOUR PASSWORD</div>
+    <div style="margin:24px 0 0; font-size:12px; letter-spacing:0.04em; color:#6E6A60; font-family:${mono};">YOUR PASSWORD</div>
     <div style="margin:8px 0 0; padding:16px; background:#F7F6F3; border:1px solid #E5E2DA; border-radius:8px; font-family:${mono}; font-size:22px; letter-spacing:0.02em;">${password}</div>
 
     <a href="${signInUrl}" target="_blank" rel="noopener"
        style="display:inline-block; margin:24px 0 0; padding:12px 20px; background:#16150F; color:#FFFFFF; border-radius:8px; font-size:15px; font-weight:500; text-decoration:none;">Sign in to U-tron</a>
 
-    <p style="margin:32px 0 0; padding-top:20px; border-top:1px solid #E5E2DA; font-size:13px; line-height:1.55; color:#8C887D;">
+    <p style="margin:32px 0 0; padding-top:20px; border-top:1px solid #E5E2DA; font-size:13px; line-height:1.55; color:#6E6A60;">
       This password was made for you and can't be changed. Your answers are anonymous: they are stored separately from your name.
       Lost this email? Contact the registrar.
     </p>
