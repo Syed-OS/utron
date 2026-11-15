@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Demo inbox · U-tron</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/pages.css">
+  <script type="module" src="/js/inbox.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="wordmark" href="/" aria-label="U-tron">U<span class="wordmark-hyphen">-</span>tron</a>
+    <div class="topbar-end">
+      <a class="text-action" href="/">Sign in
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <main class="inbox">
+    <div class="inbox-head">
+      <h1 class="inbox-title">Demo inbox</h1>
+      <p class="note note-warn">This page exists only for the demo. In production, these emails go to students' real inboxes.</p>
+    </div>
+
+    <p class="inbox-empty" id="inbox-empty" hidden>No emails yet. Run <span class="mono">npm run seed</span> to send each student their password.</p>
+
+    <div class="inbox-panes" id="inbox-panes" hidden>
+      <ul class="list inbox-list" id="inbox-list" aria-label="Emails"></ul>
+
+      <section class="inbox-message" id="inbox-message" aria-live="polite">
+        <header class="message-head">
+          <div class="message-meta">
+            <h2 class="message-subject" id="message-subject"></h2>
+            <p class="message-to">To <span id="message-to"></span></p>
+          </div>
+          <button class="btn btn-primary btn-small" id="copy-password" type="button">Copy password</button>
+        </header>
+        <!-- sandbox: the email cannot run scripts or touch this page.
+             allow-popups lets its "Sign in" link open in a new tab. -->
+        <iframe class="message-frame" id="message-frame" title="Email message"
+                sandbox="allow-popups allow-popups-to-escape-sandbox"></iframe>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">U-tron is a student project. Not affiliated with any institution.</footer>
+</body>
+</html>
