@@ -18,11 +18,14 @@ const LOGIN_ERROR = "That email and password don't match.";
 // the same time either way and response time gives nothing away.
 const DUMMY_HASH = "$2b$12$JzJoPkls26qdsmfcBOQQYuH5r4P8Z4KyuZgVohi13xPtN84TUBx5a";
 
-// Brute-force protection: 10 attempts per 15 minutes from one IP address.
-// The automated tests sign in far more often than that, so they are exempt.
+// Brute-force protection: 10 failed attempts per 15 minutes from one IP
+// address. Successful sign-ins do not count, so a shared computer (or a
+// demo) is not locked out by normal use. The automated tests fail on
+// purpose far more often than that, so they are exempt.
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 10,
+  skipSuccessfulRequests: true,
   standardHeaders: true,
   legacyHeaders: false,
   skip: () => process.env.NODE_ENV === "test",
