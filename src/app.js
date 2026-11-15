@@ -9,6 +9,7 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import { getClient } from "./db.js";
 import { authRouter } from "./routes/auth.js";
+import { coursesRouter } from "./routes/courses.js";
 import { apiNotFound, pageNotFound, errorHandler } from "./middleware/errorHandler.js";
 
 const TWO_HOURS = 2 * 60 * 60 * 1000;
@@ -86,6 +87,7 @@ export function createApp() {
   });
 
   app.use("/api", authRouter);
+  app.use("/api", coursesRouter);
 
   app.use("/api", apiNotFound);
   app.use(pageNotFound);
