@@ -20,10 +20,8 @@ function icon(paths) {
 
 export const icons = {
   arrowRight: icon('<path d="M5 12h14M13 6l6 6-6 6"/>'),
-  arrowLeft: icon('<path d="M19 12H5M11 6l-6 6 6 6"/>'),
   check: icon('<path d="M5 12.5l4.5 4.5L19 7.5"/>'),
   lock: icon('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'),
-  alert: icon('<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.2v.1"/>'),
 };
 
 // "Dec 30" from an ISO date string.
