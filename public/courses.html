@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Courses · U-tron</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/pages.css">
+  <script type="module" src="/js/courses.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="wordmark" href="/courses.html" aria-label="U-tron">U<span class="wordmark-hyphen">-</span>tron</a>
+    <div class="topbar-end">
+      <span class="topbar-name" id="student-name"></span>
+      <button class="btn btn-ghost btn-small" id="sign-out" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <div class="container">
+      <h1 class="dashboard-greeting" id="greeting">&nbsp;</h1>
+      <p class="eyebrow dashboard-term" id="term-line">&nbsp;</p>
+
+      <!-- Shown only when every evaluation is submitted. -->
+      <section class="all-done" id="all-done" hidden>
+        <h2 class="all-done-title" id="all-done-title"></h2>
+        <p>Thank you — your feedback goes to your professors after grades are posted.</p>
+      </section>
+
+      <section class="summary" aria-label="Your progress">
+        <p class="summary-text" id="summary-text">&nbsp;</p>
+        <div class="segments" id="segments" aria-hidden="true"></div>
+      </section>
+
+      <!-- Placeholder rows while the list loads; courses.js replaces them. -->
+      <ul class="list" id="course-list" aria-label="Your courses" aria-busy="true">
+        <li class="course-row"><span class="skeleton skeleton-code"></span><span class="skeleton skeleton-title"></span></li>
+        <li class="course-row"><span class="skeleton skeleton-code"></span><span class="skeleton skeleton-title"></span></li>
+        <li class="course-row"><span class="skeleton skeleton-code"></span><span class="skeleton skeleton-title"></span></li>
+        <li class="course-row"><span class="skeleton skeleton-code"></span><span class="skeleton skeleton-title"></span></li>
+      </ul>
+
+      <div class="note note-danger" id="load-error" role="alert" hidden></div>
+    </div>
+  </main>
+
+  <footer class="footer">U-tron is a student project. Not affiliated with any institution.</footer>
+</body>
+</html>
