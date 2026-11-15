@@ -78,11 +78,12 @@ export function createApp() {
     res.json({ ok: true });
   });
 
-  // Public settings the sign-in page needs before anyone is signed in.
+  // What the sign-in page needs to know before anyone is signed in.
   app.get("/api/config", (req, res) => {
     res.json({
       term: process.env.TERM_NAME || "Fall 2026",
       demoInbox: process.env.DEMO_INBOX === "true",
+      signedIn: Boolean(req.session.studentId),
     });
   });
 

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sign in · U-tron</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/pages.css">
+  <script type="module" src="/js/login.js"></script>
+</head>
+<body>
+  <header class="signin-header">
+    <a class="wordmark" href="/" aria-label="U-tron">U<span class="wordmark-hyphen">-</span>tron</a>
+  </header>
+
+  <main class="signin-main">
+    <div class="signin-column">
+      <h1 class="signin-title">Sign in to U-tron</h1>
+      <p class="signin-sub">Course evaluations for <span id="term">this term</span>. Your answers are anonymous.</p>
+
+      <!-- novalidate: login.js shows its own messages instead of the browser's bubbles -->
+      <form id="login-form" class="signin-form" novalidate>
+        <div class="field">
+          <label class="field-label" for="email">College email</label>
+          <input class="input" id="email" name="email" type="email" autocomplete="username"
+                 autocapitalize="none" spellcheck="false" aria-describedby="email-error">
+          <p class="field-error" id="email-error" hidden>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.2v.1"/></svg>
+            Enter your email address.
+          </p>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="password">Password</label>
+          <div class="input-group">
+            <input class="input mono" id="password" name="password" type="password"
+                   autocomplete="current-password" aria-describedby="password-error">
+            <button class="btn btn-ghost btn-icon" id="toggle-password" type="button"
+                    aria-label="Show password" aria-pressed="false">
+              <svg class="icon" id="icon-eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="icon" id="icon-eye-off" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M4 4l16 16"/><path d="M9.9 5.8a9 9 0 0 1 2.1-.3c6 0 9.5 6.500 9.500 6.500a17 17 0 0 1-2.600 3.400M6.300 7.600A16.500 16.500 0 0 0 2.500 12S6 18.500 12 18.500a9 9 0 0 0 3.800-.850"/><path d="M9.900 9.900a3 3 0 0 0 4.200 4.200"/></svg>
+            </button>
+          </div>
+          <p class="field-error" id="password-error" hidden>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.2v.1"/></svg>
+            Enter your password.
+          </p>
+        </div>
+
+        <div class="note note-danger" id="login-error" role="alert" hidden></div>
+
+        <button class="btn btn-primary btn-block" id="sign-in" type="submit">Sign in</button>
+      </form>
+
+      <p class="signin-help">Your password was emailed to you when evaluations opened. Lost it? Contact the registrar.</p>
+    </div>
+  </main>
+
+  <footer class="footer">U-tron is a student project. Not affiliated with any institution.</footer>
+
+  <aside class="demo-bar" id="demo-bar" hidden>
+    <span>Demo mode — passwords are delivered to the demo inbox.</span>
+    <a class="text-action" href="/inbox.html">Open inbox
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </aside>
+</body>
+</html>

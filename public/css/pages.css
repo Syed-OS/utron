@@ -1,0 +1,81 @@
+/* Page layouts. Components live in components.css; this file only places
+   them on each page. */
+
+/* A centered column. Content inside is left-aligned. */
+.container {
+  width: 100%;
+  max-width: 880px;
+  margin-inline: auto;
+  padding-inline: var(--s5);
+}
+
+/* --- Sign in --- */
+
+.signin-header {
+  padding: var(--s5);
+}
+
+.signin-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s5);
+}
+
+.signin-column {
+  width: 100%;
+  max-width: 380px;
+  /* Sits slightly above true center, where the eye expects it. */
+  margin-bottom: 8vh;
+}
+
+.signin-title {
+  font-size: var(--text-xl);
+}
+
+.signin-sub {
+  margin-top: var(--s3);
+  color: var(--ink-2);
+}
+
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  margin-top: var(--s6);
+}
+
+.signin-form .btn-block {
+  margin-top: var(--s2);
+}
+
+.signin-help {
+  margin-top: var(--s5);
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+/* Fixed to the bottom of the window in demo mode only. */
+.demo-bar {
+  position: fixed;
+  inset: auto 0 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1) var(--s3);
+  padding: var(--s3) var(--s4) calc(var(--s3) + env(safe-area-inset-bottom));
+  background: var(--surface-2);
+  border-top: 1px solid var(--line);
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+}
+
+.demo-bar .text-action {
+  font-size: var(--text-xs);
+}
+
+/* Leave room so the bar never covers the footer. */
+.has-demo-bar .footer {
+  padding-bottom: 72px;
+}
