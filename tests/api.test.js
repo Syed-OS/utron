@@ -42,7 +42,6 @@ before(async () => {
   process.env.NODE_ENV = "test"; // turns the login rate limit off
   process.env.SESSION_SECRET = "test-secret";
   process.env.DB_NAME = "utron_test";
-  process.env.DEMO_INBOX = "false";
 
   replicaSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
   await connectToDatabase(replicaSet.getUri(), process.env.DB_NAME);
@@ -144,11 +143,6 @@ test("a closed evaluation cannot be saved or submitted", async () => {
   const agent = await signedInAgent();
   await agent.put(`/api/courses/${CLOSED_COURSE}/draft`).send({ answers: { clarity: 3 } }).expect(403);
   await agent.post(`/api/courses/${CLOSED_COURSE}/submit`).send({ answers: completeAnswers }).expect(403);
-});
-
-test("the demo inbox does not exist when DEMO_INBOX is off", async () => {
-  await request(app).get("/api/demo/inbox").expect(404);
-  await request(app).get("/inbox.html").expect(404);
 });
 
 // ----------------------------------------------------------------- Drafts

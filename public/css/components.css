@@ -215,11 +215,6 @@
   color: var(--danger);
 }
 
-.note-warn {
-  background: var(--warn-wash);
-  color: var(--warn);
-}
-
 .note-quiet {
   background: var(--surface-2);
   color: var(--ink-2);

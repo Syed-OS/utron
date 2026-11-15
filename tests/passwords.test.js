@@ -1,26 +1,8 @@
-// Unit tests for password generation and hashing.
+// Unit tests for password hashing.
 
 import test from "node:test";
 import assert from "node:assert/strict";
-import { generatePassword, hashPassword, verifyPassword } from "../src/services/passwords.js";
-
-test("generated passwords look like XXXX-XXXX-XXXX", () => {
-  assert.match(generatePassword(), /^[A-Za-z2-9]{4}-[A-Za-z2-9]{4}-[A-Za-z2-9]{4}$/);
-});
-
-test("generated passwords never use look-alike characters", () => {
-  for (let i = 0; i < 200; i++) {
-    assert.doesNotMatch(generatePassword(), /[0O1lI]/);
-  }
-});
-
-test("generated passwords are different every time", () => {
-  const passwords = new Set();
-  for (let i = 0; i < 200; i++) {
-    passwords.add(generatePassword());
-  }
-  assert.equal(passwords.size, 200);
-});
+import { hashPassword, verifyPassword } from "../src/services/passwords.js";
 
 test("the hash is bcrypt with cost 12, and is not the password", async () => {
   const hash = await hashPassword("abcd-efgh-jkmn");

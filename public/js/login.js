@@ -23,7 +23,7 @@ function destinationAfterSignIn() {
 }
 
 // One request tells the page what it needs: skip this page if already
-// signed in, fill in the term name, and show the demo bar in demo mode.
+// signed in, and fill in the term name.
 api("GET", "/config")
   .then((config) => {
     if (config.signedIn) {
@@ -31,8 +31,6 @@ api("GET", "/config")
       return;
     }
     document.querySelector("#term").textContent = config.term;
-    document.querySelector("#demo-bar").hidden = !config.demoInbox;
-    document.body.classList.toggle("has-demo-bar", config.demoInbox);
   })
   .catch(() => {}); // the form still works without it
 

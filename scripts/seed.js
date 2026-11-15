@@ -1,26 +1,23 @@
-// Fills the database with demo courses and students.
+// Fills the database with the demo courses and the one demo account.
 //
-//   npm run seed              add anything that is missing
+//   npm run seed              create or update the courses and the account
 //   npm run seed -- --reset   wipe everything first, then recreate
 //
-// Each new student gets a generated password. Only its bcrypt hash goes
-// into the database; the password itself goes into an "email" in outbox/,
-// standing in for the student's real inbox.
+// The account's email and password come from .env (DEMO_EMAIL and
+// DEMO_PASSWORD), so the password is never written in the code or
+// committed to the repository. Only its bcrypt hash goes into the database.
 
 import "dotenv/config";
-import fs from "node:fs/promises";
 import crypto from "node:crypto";
 import { connectToDatabase, collections, getClient, closeDatabase } from "../src/db.js";
 import { questionnaire } from "../src/config/questions.js";
-import { generatePassword, hashPassword } from "../src/services/passwords.js";
-import { sendMail, OUTBOX_DIR } from "../src/services/mailer.js";
-import { buildPasswordEmail } from "../src/services/passwordEmail.js";
+import { hashPassword } from "../src/services/passwords.js";
 
 const term = process.env.TERM_NAME || "Fall 2026";
 const closesAt = new Date(process.env.EVAL_CLOSES_AT || "2026-12-30T23:59:00-05:00");
-const signInUrl = `http://localhost:${process.env.PORT || 3000}`;
+const dbName = process.env.DB_NAME || "utron";
 
-// Everything below is fictional: the courses, the professors, the students.
+// Everything below is fictional: the courses, the professors, the student.
 const courses = [
   { _id: "CSC-240-F26", code: "CSC 240", title: "Web Programming",
     professor: "Prof. Dana Whitfield", schedule: "Tue/Thu 10:55–12:40" },
@@ -28,34 +25,23 @@ const courses = [
     professor: "Prof. Ikenna Obi", schedule: "Mon/Wed/Fri 9:15–10:20" },
   { _id: "HST-155-F26", code: "HST 155", title: "The Modern City",
     professor: "Prof. Marguerite Sandoval", schedule: "Tue/Thu 1:55–3:40" },
-  { _id: "PHY-120-F26", code: "PHY 120", title: "Physics of Everyday Life",
-    professor: "Prof. Tobias Lindqvist", schedule: "Mon/Wed 1:50–3:35" },
   { _id: "ENG-230-F26", code: "ENG 230", title: "Writing About Science",
     professor: "Prof. Priya Raman", schedule: "Mon/Wed/Fri 11:45–12:50" },
 ];
 
-const students = [
-  { name: "Alex Rivera", email: "alex.rivera@students.example.edu",
-    courseIds: ["CSC-240-F26", "MTH-210-F26", "HST-155-F26", "ENG-230-F26"] },
-  { name: "Jordan Kim", email: "jordan.kim@students.example.edu",
-    courseIds: ["CSC-240-F26", "MTH-210-F26", "PHY-120-F26"] },
-  { name: "Sam Okafor", email: "sam.okafor@students.example.edu",
-    courseIds: ["CSC-240-F26", "MTH-210-F26", "HST-155-F26", "PHY-120-F26", "ENG-230-F26"] },
-  { name: "Taylor Nguyen", email: "taylor.nguyen@students.example.edu",
-    courseIds: ["CSC-240-F26", "HST-155-F26", "ENG-230-F26"] },
-  { name: "Morgan Patel", email: "morgan.patel@students.example.edu",
-    courseIds: ["MTH-210-F26", "HST-155-F26", "PHY-120-F26", "ENG-230-F26"] },
-  { name: "Casey Brooks", email: "casey.brooks@students.example.edu",
-    courseIds: ["CSC-240-F26", "HST-155-F26", "PHY-120-F26", "ENG-230-F26"] },
-];
-
-if (!process.env.MONGODB_URI) {
-  console.error('The seed needs MONGODB_URI. Copy ".env.example" to ".env" and fill it in.');
+// Stop early, with instructions, if a setting is missing.
+const missing = ["MONGODB_URI", "DEMO_EMAIL", "DEMO_PASSWORD"].filter((name) => !process.env[name]);
+if (missing.length > 0) {
+  console.error(`The seed needs ${missing.join(", ")} in .env. See ".env.example" for what each one is.`);
   process.exit(1);
 }
 
+// Stored the same way the login route looks it up: trimmed and lowercase.
+const email = process.env.DEMO_EMAIL.trim().toLowerCase();
+const name = process.env.DEMO_NAME || "John Doe";
+
 try {
-  await connectToDatabase(process.env.MONGODB_URI, process.env.DB_NAME || "utron");
+  await connectToDatabase(process.env.MONGODB_URI, dbName);
 } catch (err) {
   // Same friendly message as server.js, instead of a stack trace.
   console.error(`The seed can't reach MongoDB: ${err.message}`);
@@ -75,37 +61,34 @@ for (const course of courses) {
   await db.courses.replaceOne({ _id: course._id }, document, { upsert: true });
 }
 
-// Students: skip any that already exist, so a re-run never changes a
-// password that has already been "emailed".
-const created = [];
-for (const student of students) {
-  const existing = await db.students.findOne({ email: student.email });
-  if (existing) {
-    created.push({ name: student.name, email: student.email, password: "(unchanged — see the demo inbox)" });
-    continue;
-  }
+// This account is the only one allowed in, so remove any other.
+await db.students.deleteMany({ email: { $ne: email } });
 
-  const password = generatePassword();
-  const { insertedId } = await db.students.insertOne({
-    email: student.email,
-    name: student.name,
-    passwordHash: await hashPassword(password),
-    courseIds: student.courseIds,
-  });
+const existing = await db.students.findOne({ email });
+const account = {
+  email,
+  name,
+  passwordHash: await hashPassword(process.env.DEMO_PASSWORD),
+  courseIds: courses.map((course) => course._id),
+};
 
-  await sendMail({ to: student.email, ...buildPasswordEmail({ name: student.name, password, term, signInUrl }) });
-  created.push({ name: student.name, email: student.email, password });
-
-  // Give the first student some history, so the dashboard shows all three
-  // states (submitted, in progress, not started) the moment the demo starts.
-  if (student.email === students[0].email) {
-    await addDemoHistory(insertedId);
-  }
+if (existing) {
+  // Already there: bring it in line with .env (for example a new password).
+  await db.students.updateOne({ _id: existing._id }, { $set: account });
+} else {
+  const { insertedId } = await db.students.insertOne(account);
+  // Some history, so the dashboard shows all three states (submitted,
+  // in progress, not started) the moment the demo starts.
+  await addDemoHistory(insertedId);
 }
 
-console.log(`\nSeeded ${courses.length} courses and ${students.length} students for ${term}.`);
-console.table(created);
-console.log(`Sign in at ${signInUrl} — passwords are also in the demo inbox: ${signInUrl}/inbox.html\n`);
+console.log(`
+Seeded ${courses.length} courses and 1 account for ${term}.
+
+  Sign in at  http://localhost:${process.env.PORT || 3000}
+  Email       ${email}
+  Password    the DEMO_PASSWORD value in your .env file
+`);
 
 await closeDatabase();
 
@@ -142,9 +125,7 @@ async function resetEverything() {
   for (const collection of Object.values(db)) {
     await collection.deleteMany({});
   }
-  // Signed-in sessions belong to students that no longer exist.
-  await getClient().db(process.env.DB_NAME || "utron").collection("sessions").deleteMany({});
-  // Old emails hold passwords that no longer work.
-  await fs.rm(OUTBOX_DIR, { recursive: true, force: true });
-  console.log("Reset: removed all students, courses, evaluations and demo emails.");
+  // Signed-in sessions belong to accounts that no longer exist.
+  await getClient().db(dbName).collection("sessions").deleteMany({});
+  console.log("Reset: removed all accounts, courses and evaluations.");
 }

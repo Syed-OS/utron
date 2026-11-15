@@ -4,9 +4,6 @@ node_modules/
 # Secrets — the real connection string and session secret live here
 .env
 
-# Demo "emails" written by the mailer (they contain plaintext passwords)
-outbox/
-
 # OS / tooling noise
 .DS_Store
 coverage/
