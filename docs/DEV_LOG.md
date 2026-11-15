@@ -191,7 +191,7 @@ All entries are from 2026-11-15, the day of the build.
   without focus.
 - **Result:** the full flow — sign in, pick a course, answer, review, submit —
   passes with the keyboard alone, with zero console errors.
-- **Commit:** see `fix(evaluate): let arrow keys step into the options`
+- **Commit:** `488249b`
 
 ---
 
