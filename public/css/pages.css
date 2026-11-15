@@ -583,6 +583,7 @@ h1[tabindex="-1"]:focus {
   }
 
   .question-prompt {
+    max-width: none;
     font-size: var(--text-xl);
     letter-spacing: -0.02em;
   }
