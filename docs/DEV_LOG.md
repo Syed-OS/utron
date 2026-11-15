@@ -62,3 +62,21 @@ bottom. Commit hashes point at the fix.
   the "Sign in" button but matched every `.btn` in the form, including the
   icon button inside the field.
 - **Fix:** narrowed the selector to `.signin-form .btn-block`.
+
+### A chosen answer disappeared on refresh
+
+- **Noticed:** an automated browser walkthrough picked an option on
+  question 3, refreshed the page, and pressed Enter — and got stuck. The
+  page had come back on question 3 (correct), but with nothing selected, so
+  "Next" was disabled.
+- **Cause:** the draft was only saved when the student *moved* to another
+  question. A choice that had been made but not yet confirmed with Next
+  existed only in the page's memory.
+- **Fix:** `recordChoice()` in `public/js/evaluate.js` now saves as soon as
+  an option is picked. Typed answers are still saved on move, not on every
+  keystroke.
+- **Checked first:** picking and pressing Enter quickly sends two saves
+  almost at once. Fired six simultaneous first-time `PUT /draft` requests,
+  six rounds in a row, with curl: all returned 200 and one draft document
+  existed afterwards. The upsert is safe to run concurrently because the
+  query matches the unique index exactly.
