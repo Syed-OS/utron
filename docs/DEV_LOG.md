@@ -179,6 +179,20 @@ All entries are from 2026-11-15, the day of the build.
 - **Fix:** `max-width: none` for the question text below 600px.
 - **Commit:** `1520bff`
 
+### 15. Arrow keys did nothing on the first question
+
+- **Noticed:** a keyboard-only walkthrough (no mouse at any point) reached the
+  first question from the dashboard and pressed the right arrow. Nothing
+  happened. Because of fix 8, focus only moves into the options once the page
+  has seen a key press — and on a freshly loaded page it has not seen one yet.
+- **Fix:** in the `keydown` listener, an arrow key pressed while nothing is
+  focused moves focus to the options. From there the browser's own arrow-key
+  behavior for radio buttons takes over. Number keys and Enter already worked
+  without focus.
+- **Result:** the full flow — sign in, pick a course, answer, review, submit —
+  passes with the keyboard alone, with zero console errors.
+- **Commit:** see `fix(evaluate): let arrow keys step into the options`
+
 ---
 
 ## Decisions worth remembering

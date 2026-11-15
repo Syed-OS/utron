@@ -175,7 +175,7 @@ would add concepts without removing code. It also matches the Track 2 handout.
 | The `state` object | 29–39 |
 | `showQuestion` — draw one question | 143–174 |
 | `goNext` and `goBack` — navigation | 392–411 |
-| `saveDraft` — autosave | 506–527 |
+| `saveDraft` — autosave | 515–536 |
 
 ### What it does
 
@@ -195,7 +195,7 @@ redraw.
   required question is unanswered. Otherwise it saves the draft and shows
   either the next question or the review screen.
 - **`goBack` (407–411)** is the mirror image, sliding the other way.
-- **`saveDraft` (506–527)** sends *all* answers with `PUT`. On success it
+- **`saveDraft` (515–536)** sends *all* answers with `PUT`. On success it
   flashes "Saved". On failure it shows "Couldn't save — check your
   connection" with a Retry button. It returns `true` or `false` so
   `saveAndExit` can refuse to leave with unsaved work.
