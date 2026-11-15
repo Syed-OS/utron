@@ -54,7 +54,14 @@ if (!process.env.MONGODB_URI) {
   process.exit(1);
 }
 
-await connectToDatabase(process.env.MONGODB_URI, process.env.DB_NAME || "utron");
+try {
+  await connectToDatabase(process.env.MONGODB_URI, process.env.DB_NAME || "utron");
+} catch (err) {
+  // Same friendly message as server.js, instead of a stack trace.
+  console.error(`The seed can't reach MongoDB: ${err.message}`);
+  console.error('Check MONGODB_URI in .env. On Atlas, also check "Network Access".');
+  process.exit(1);
+}
 const db = collections();
 
 if (process.argv.includes("--reset")) {
