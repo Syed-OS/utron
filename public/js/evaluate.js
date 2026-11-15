@@ -488,6 +488,15 @@ document.addEventListener("keydown", (event) => {
     return;
   }
 
+  // Arrow keys with nothing focused (a keyboard user who just arrived):
+  // step into the options. From there the browser's own arrow-key
+  // handling for radio buttons takes over.
+  if (event.key.startsWith("Arrow") && document.activeElement === document.body) {
+    const radio = stage.querySelector("input:checked") || stage.querySelector("input");
+    if (radio) radio.focus();
+    return;
+  }
+
   // Number keys pick an option: 1 is the first, 2 the second, and so on.
   const isPlainDigit = /^[1-9]$/.test(event.key) && !event.ctrlKey && !event.metaKey && !event.altKey;
   if (isPlainDigit && !inTextarea) {
