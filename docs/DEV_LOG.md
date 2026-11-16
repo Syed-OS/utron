@@ -223,6 +223,23 @@ All entries are from 2026-11-15, the day of the build.
 - **Note:** entries 10 and 11 above describe the inbox that this change
   removed. They are kept because they happened.
 
+### 18. Deployed, so the demo works from any computer
+
+- **Why:** the presentation runs on a lab machine, not the laptop the server
+  was set up on, so "run it locally" was not an option on the day.
+- **Change:** deployed to Render's free tier, using the same Atlas database.
+  Secrets are entered in the host's dashboard, not in the repository.
+- **Code change needed:** in production the session cookie is HTTPS-only, but
+  the host's proxy handles HTTPS and passes plain HTTP to the app, so Express
+  believed the request was insecure and would not send the cookie. Sign-in
+  would have appeared to succeed and then bounced back. Fixed with
+  `app.set("trust proxy", 1)` in production, which also gives the login rate
+  limit each visitor's real IP address.
+- **Checked on the live site:** pages and fonts load, the cookie carries
+  `HttpOnly; Secure; SameSite=Strict`, a wrong password and an injection
+  payload are rejected, and the course list shows the seeded states.
+- **Commit:** `cb5705a`
+
 ---
 
 ## Decisions worth remembering

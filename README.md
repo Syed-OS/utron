@@ -12,6 +12,10 @@ database can tell who wrote what.
 Built for CSC 240 (Web Programming), Track 2: Backend & Database
 (Node.js + MongoDB).
 
+**Live site:** <https://utron.onrender.com> — sign in with the
+[demo account](#the-demo-account). It runs on a free hosting tier that sleeps
+when idle, so the first load can take up to a minute.
+
 ## Screenshots
 
 | Sign in | Dashboard |
@@ -147,6 +151,15 @@ npm run db:local
 It prints a `MONGODB_URI` line. Put that in `.env`, leave the window open, and
 run `npm run seed` and `npm start` in a second window. The data disappears when
 you stop it.
+
+### Deploying
+
+The live site runs on [Render](https://render.com) as a Node web service,
+built with `npm install` and started with `npm start`. The settings that live
+in `.env` locally are entered in the host's dashboard instead: `MONGODB_URI`,
+`SESSION_SECRET`, and `NODE_ENV=production` (which makes the session cookie
+HTTPS-only). Atlas must allow connections from the host under
+*Network Access*.
 
 ## CRUD
 
