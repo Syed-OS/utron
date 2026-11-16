@@ -19,6 +19,15 @@ export function createApp() {
   const isProduction = process.env.NODE_ENV === "production";
   const dbName = process.env.DB_NAME || "utron";
 
+  // On a hosting service the app sits behind the host's proxy, which
+  // handles HTTPS and forwards plain HTTP to us. Trusting that one proxy
+  // lets Express see that the original request was secure (so the
+  // HTTPS-only session cookie is sent) and see the visitor's real IP
+  // address (so the login rate limit counts per visitor).
+  if (isProduction) {
+    app.set("trust proxy", 1);
+  }
+
   // Do not advertise which framework runs the site.
   app.disable("x-powered-by");
 
